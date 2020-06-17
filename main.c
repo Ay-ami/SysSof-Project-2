@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 /*
-Based on Wirth’s definition for EBNF we have the following rule:
+Based on Wirthâ€™s definition for EBNF we have the following rule:
 [ ] means an optional item,
 { } means repeat 0 or more times.
 Terminal symbols are enclosed in quote marks.
@@ -44,12 +44,11 @@ int main()
     printf(" %d", nulsym);
 
     char achar;
-    int count = 0;
+
     while(!feof(fp)) // "while not at the end of the file"
     {
-      fscanf(fp, "%c", achar); // "scan in 3 numbers per line"
+      fscanf(fp, "%c", achar);
       printf("%c", achar);
-      count++;
     }
 
 
