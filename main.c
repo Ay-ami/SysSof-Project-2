@@ -3,7 +3,7 @@
 #include <string.h>
 
 /*
-Based on Wirthâ€™s definition for EBNF we have the following rule:
+Based on Wirth’s definition for EBNF we have the following rule:
 [ ] means an optional item,
 { } means repeat 0 or more times.
 Terminal symbols are enclosed in quote marks.
@@ -39,6 +39,38 @@ FILE *openFile(char fileName[], char mode[], FILE *fp)
     return fp;
 }
 
+ //print character by character and ignores comments
+void removeComments (FILE *fp, FILE *fpw, char *arr)
+{
+    char c, lc = NULL; //"character" and "last character"
+    int commentFlag = 0, i = 0;
+    while(!feof(fp))
+    {
+        fscanf(fp, "%c", &c);
+        // checks to see if it's the beginning of a comment
+        if ( c == '*' )
+            if ( lc == '/' )
+                commentFlag = 1;
+        // prints if it's not inside of a comment and if it's not the very first thing scanned
+        if(commentFlag == 0 && lc != NULL)
+        {
+            fprintf(fpw, "%c", lc); // yes we print "last character" and not the current one
+            arr[i] = lc;
+            i++;
+        }
+        // checks if a comment has ended
+        if( c == '/')
+            if ( lc == '*' )
+            {
+                commentFlag = 0;
+                c = NULL; // no this doesn't have anything to do with that NULL up there, it's just a patch for a dumb quirk
+            }
+        // assigns the current character to "last character"
+        lc = c;
+    }
+    //arr[i] = '\0';
+}
+
 int main()
 {
     FILE *fp, *fpw;
@@ -49,7 +81,7 @@ int main()
     printf("%s", RESERVED_WORDS[0]);
     printf(" %d", nulsym);
 
-
+/*
     // scan input.txt -> output.txt
     char line[100]; //I'm assuming no line will be longer than 60 characters
     while(!feof(fp)) // "while not at the end of the file"
@@ -61,29 +93,17 @@ int main()
     }
     rewind(fp);
     printf("\n");
+*/
 
-   //print character by character and ignores comments
-    char c, lc = NULL; //"character" and "last character"
-    int commentFlag = 0;
-    while(!feof(fp))
+    char *aThing = calloc(1000, sizeof(char));
+    removeComments(fp, fpw, aThing);
+
+
+    int i = 0;
+    while (aThing[i] != '\0')
     {
-        fscanf(fp, "%c", &c);
-        // checks to see if it's the beginning of a comment
-        if ( c == '*' )
-            if ( lc == '/' )
-                commentFlag = 1;
-        // prints if it's not inside of a comment and if it's not the very first thing scanned
-        if(commentFlag == 0 && lc != NULL)
-            printf("%c", lc); // yes we print "last character" and not the current one
-        // checks if a comment has ended
-        if( c == '/')
-            if ( lc == '*' )
-            {
-                commentFlag = 0;
-                c = NULL;
-            }
-        // assigns the current character to "last character"
-        lc = c;
+        printf("%c", aThing[i]);
+        i++;
     }
 
 
