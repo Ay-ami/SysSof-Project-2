@@ -3,7 +3,7 @@
 #include <string.h>
 
 /*
-Based on Wirth’s definition for EBNF we have the following rule:
+Based on Wirthâ€™s definition for EBNF we have the following rule:
 [ ] means an optional item,
 { } means repeat 0 or more times.
 Terminal symbols are enclosed in quote marks.
@@ -62,24 +62,27 @@ int main()
     rewind(fp);
     printf("\n");
 
-    //print character by character and ignores comments
+   //print character by character and ignores comments
     char c, lc = NULL; //"character" and "last character"
     int commentFlag = 0;
     while(!feof(fp))
     {
         fscanf(fp, "%c", &c);
+        // checks to see if it's the beginning of a comment
         if ( c == '*' )
             if ( lc == '/' )
                 commentFlag = 1;
+        // prints if it's not inside of a comment and if it's not the very first thing scanned
         if(commentFlag == 0 && lc != NULL)
-            printf("%c", lc);
+            printf("%c", lc); // yes we print "last character" and not the current one
+        // checks if a comment has ended
         if( c == '/')
             if ( lc == '*' )
             {
                 commentFlag = 0;
                 c = NULL;
             }
-
+        // assigns the current character to "last character"
         lc = c;
     }
 
