@@ -10,21 +10,27 @@ Terminal symbols are enclosed in quote marks.
 A period is used to indicate the end of the definition of a syntactic class.
 */
 
-#define MAX_DIGITS 5
-#define MAX_ID_LENGTH 11
+#define MAX_DIGITS 5 + 1
+#define MAX_ID_LENGTH 11 + 1
 
 char * RESERVED_WORDS[] = {"const", "var", "procedure", "call", "if", "then", "else", "while", "do", "read", "write", "odd"};
 char SPECIAL_SYMBOLS[] = {'+', '-', '*', '/', '(' , ')', '=', ',' , '.', '<', '>',  ';' , ':' };
 
 // token types
 typedef enum {
-nulsym = 1, identsym, numbersym, plussym, minussym,
-multsym,  slashsym, oddsym, eqsym, neqsym, lessym, leqsym,
-gtrsym, geqsym, lparentsym, rparentsym, commasym, semicolonsym,
-periodsym, becomessym, lbracesym, rbracesym, ifsym, thensym,
-whilesym, dosym, callsym, constsym, varsym, procsym, writesym,
-readsym , elsesym
+nulsym = 1, identsym = 2, numbersym = 3, plussym = 4, minussym = 5,
+multsym = 6,  slashsym = 7, oddsym = 8, eqsym = 9, neqsym = 10, lessym = 11, leqsym = 12,
+gtrsym = 13, geqsym = 14, lparentsym = 15, rparentsym = 16, commasym = 17, semicolonsym = 18,
+periodsym = 19, becomessym = 20, lbracesym = 21, rbracesym = 22, ifsym = 23, thensym = 24,
+whilesym = 25, dosym = 26, callsym = 27, constsym = 28, varsym = 29, procsym = 30, writesym = 31,
+readsym = 32, elsesym = 33
 }token_type;
+
+struct token{
+    int ID;
+    char litValue[MAX_DIGITS]; // if it is a number
+    char nameEnum[MAX_ID_LENGTH];
+}token;
 
 // opens the file
 FILE *openFile(char fileName[], char mode[], FILE *fp)
@@ -95,16 +101,20 @@ int main()
     printf("\n");
 */
 
-    char *aThing = calloc(1000, sizeof(char));
-    removeComments(fp, fpw, aThing);
+    char *anArray = calloc(1000, sizeof(char));
+    removeComments(fp, fpw, anArray);
 
-
+    // cycle through string index by index
     int i = 0;
-    while (aThing[i] != '\0')
+    while (anArray[i] != '\0')
     {
-        printf("%c", aThing[i]);
+        printf("%c", anArray[i]);
         i++;
     }
+
+
+    struct token tokens[strlen(anArray)];
+
 
 
     fclose(fp);
