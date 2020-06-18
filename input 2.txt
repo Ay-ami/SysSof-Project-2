@@ -1,0 +1,5 @@
+var x, y;
+{
+	y := 3; /*hehehehe*/
+	x := y + 56;
+}.

@@ -51,23 +51,36 @@ int main()
 
 
     // scan input.txt -> output.txt
-    char aline[100]; //I'm assuming no line will be longer than 60 characters
+    char line[100]; //I'm assuming no line will be longer than 60 characters
     while(!feof(fp)) // "while not at the end of the file"
     {
-        fgets(&aline, 100, fp);
-        fprintf(fpw, "%s", aline);
-        //printf("\n%d", strlen(aline)-1);
+        fgets(&line, 100, fp);
+        fprintf(fpw, "%s", line);
+        //printf("\n%d", strlen(line)-1);
         //printf(" %d", strlen(test));
     }
     rewind(fp);
     printf("\n");
 
-    //print character by character
-    char c;
+    //print character by character and ignores comments
+    char c, lc = NULL; //"character" and "last character"
+    int commentFlag = 0;
     while(!feof(fp))
     {
         fscanf(fp, "%c", &c);
-        printf("%c", c);
+        if ( c == '*' )
+            if ( lc == '/' )
+                commentFlag = 1;
+        if(commentFlag == 0 && lc != NULL)
+            printf("%c", lc);
+        if( c == '/')
+            if ( lc == '*' )
+            {
+                commentFlag = 0;
+                c = NULL;
+            }
+
+        lc = c;
     }
 
 
