@@ -1,6 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+// COP 3402
+// Project 2- Lexical Analyzer
+// Due 6/19/2020
+// Victor Torres
+// Maya Awad
+
 
 /*
 Based on Wirth’s definition for EBNF we have the following rule:
@@ -49,7 +55,6 @@ FILE *openFile(char fileName[], char mode[], FILE *fp)
         printf("Could not open %s\n", fileName);
         exit(0);
     }
-    printf("file opened\n");
     return fp;
 }
 
@@ -85,7 +90,7 @@ void removeComments (FILE *fp, FILE *fpw, char *arr)
     //arr[i] = '\0';
 }
 
-// returns 1 if true, returns 0 if false
+// returns 1 if true, returns 0 if false, unused as of right now
 int isTrueString (char* bigStr, int place, int whichWord)
 {
     int i = 0;
@@ -108,8 +113,6 @@ int isTrueString (char* bigStr, int place, int whichWord)
     // return the word's length if it truly is the same word
     return 1;
 }
-
-
 
 int symbolToToken(char symbol){ //exchanges char for token ident tag
     switch((int) symbol){
@@ -149,6 +152,7 @@ int symbolToToken(char symbol){ //exchanges char for token ident tag
     return 0;
 }
 
+//unused as of right now
 struct token *tokeninzer (char codeArr[]){
 
   int i = 0;
@@ -475,14 +479,14 @@ void lexemeTable (FILE *fpw, struct token *tokens)
     {
         if ( tokens[i].ID == 2 ) // if var
         {
-            fprintf(fpw, "%-11s %6d\n", tokens[i].nameEnum, tokens[i].ID);
+            fprintf(fpw, "%-11s   %6d\n", tokens[i].nameEnum, tokens[i].ID);
         }
         else if (tokens[i].ID == 3)
         {
-             fprintf(fpw, "%-11d %6d\n", tokens[i].value, tokens[i].ID);
+             fprintf(fpw, "%-11d   %6d\n", tokens[i].value, tokens[i].ID);
         }
         else{
-            fprintf(fpw, "%-11s %6d\n", LITERAL_ID[tokens[i].ID], tokens[i].ID);
+            fprintf(fpw, "%-11s   %6d\n", LITERAL_ID[tokens[i].ID], tokens[i].ID);
         }
     }
 
@@ -509,22 +513,10 @@ int main()
     fp=openFile("input.txt", "r", fp);
     fpw=openFile("output.txt", "w", fpw);
 
-    /*
-    //test global arrays
-    printf("%s", RESERVED_WORDS[0]);
-    printf(" %d", nulsym);
-    */
-
     char *codeArr = calloc(1000, sizeof(char));
     removeComments(fp, fpw, codeArr);
 
-    // an array of structs for the tokens which is the length of the array we just built
-    //struct token *tokens = calloc(strlen(anArray), sizeof(struct token)); //[strlen(anArray)];;
-
-    //tokens = tokeninzer(anArray);
-
-
-
+// tokinizer function:
 
   int i = 0;
   int j = 0;
@@ -834,10 +826,7 @@ int main()
     }//-------------------------------------end of checking identifier------------------------------------------------//
 
   }
-
   tokenStorage[j].ID = 0; //ID 0 signals the end of the struct
-
-
 
 
     /*
@@ -878,6 +867,7 @@ int main()
 
     fclose(fp);
     fclose(fpw);
+    free(tokenStorage);
 
     return 0;
 }
