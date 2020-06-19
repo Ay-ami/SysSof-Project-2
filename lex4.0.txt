@@ -26,12 +26,7 @@ char SPECIAL_SYMBOLS[] = {'+', '-', '*', '/', '(' , ')', '=', ',' , '.', '<', '>
 char *LITERAL_ID[] = {"", " ", "id", "number", "+", "-", "*", "/", "odd", "=", "<>", "<", "<=", ">", ">=",
 "(", ")", ",", ";", ".", ":=", "{", "}", "if", "then", "while", "do", "call", "const", "var", "procedure",
 "write", "read", "else", ":"};
-/*char *LITERAL_ID[] = {" ", "nulsym", "identsym", "numbersym", "plussym", "minussym",
-"multsym",  "slashsym", "oddsym", "eqsym", "neqsym", "lessym", "leqsym", "gtrsym", "geqsym",
-"lparentsym", "rparentsym", "commasym", "semicolonsym", "periodsym", "becomessym", "lbracesym",
-"rbracesym", "ifsym", "thensym", "whilesym", "dosym", "callsym", "constsym", "varsym", "procsym",
-"writesym", "readsym", "elsesym"};*/
-// token types
+
 typedef enum {
 nulsym = 1, identsym = 2, numbersym = 3, plussym = 4, minussym = 5,
 multsym = 6,  slashsym = 7, oddsym = 8, eqsym = 9, neqsym = 10, lessym = 11, leqsym = 12,
@@ -43,7 +38,7 @@ readsym = 32, elsesym = 33, colonsym = 34
 
 struct token{
     int ID;
-    int value; // if it is a number
+    int value;
     char nameEnum[MAX_ID_LENGTH];
 }token;
 
@@ -141,7 +136,7 @@ int symbolToToken(char symbol){ //exchanges char for token ident tag
             return semicolonsym;
         case (int) '.':
             return periodsym;
-        case (int) ':': //---------------
+        case (int) ':': 
             return colonsym;
         case (int) '{':
             return lbracesym;
@@ -350,7 +345,7 @@ int main()
 
     }//end of checking for reserved letters / words---------------------------//
 
-    //Will check for reserved symbols
+    //Will check for reserved symbols----------------//
 
     //This will check if the current token is going to match with a character
     currToken.ID = symbolToToken(codeArr[i]);
@@ -512,8 +507,6 @@ int main()
   }
   tokenStorage[j].ID = 0; //ID 0 signals the end of the struct
 
-
-   
 
     // print lexeme table
     lexemeTable(fpw, tokenStorage);
