@@ -18,7 +18,7 @@ char * RESERVED_WORDS[] = {"const", "var", "procedure", "call", "if", "then", "e
 char SPECIAL_SYMBOLS[] = {'+', '-', '*', '/', '(' , ')', '=', ',' , '.', '<', '>',  ';' , ':' };
 char *LITERAL_ID[] = {"", " ", "id", "number", "+", "-", "*", "/", "odd", "=", "<>", "<", "<=", ">", ">=",
 "(", ")", ",", ";", ".", ":=", "{", "}", "if", "then", "while", "do", "call", "const", "var", "procedure",
-"write", "read", "else"};
+"write", "read", "else", ":"};
 /*char *LITERAL_ID[] = {" ", "nulsym", "identsym", "numbersym", "plussym", "minussym",
 "multsym",  "slashsym", "oddsym", "eqsym", "neqsym", "lessym", "leqsym", "gtrsym", "geqsym",
 "lparentsym", "rparentsym", "commasym", "semicolonsym", "periodsym", "becomessym", "lbracesym",
@@ -31,7 +31,7 @@ multsym = 6,  slashsym = 7, oddsym = 8, eqsym = 9, neqsym = 10, lessym = 11, leq
 gtrsym = 13, geqsym = 14, lparentsym = 15, rparentsym = 16, commasym = 17, semicolonsym = 18,
 periodsym = 19, becomessym = 20, lbracesym = 21, rbracesym = 22, ifsym = 23, thensym = 24,
 whilesym = 25, dosym = 26, callsym = 27, constsym = 28, varsym = 29, procsym = 30, writesym = 31,
-readsym = 32, elsesym = 33
+readsym = 32, elsesym = 33, colonsym = 34
 }token_type;
 
 struct token{
@@ -109,6 +109,363 @@ int isTrueString (char* bigStr, int place, int whichWord)
     return 1;
 }
 
+
+
+int symbolToToken(char symbol){ //exchanges char for token ident tag
+    switch((int) symbol){
+        case (int) '+':
+            return plussym;
+        case (int) '-':
+            return minussym;
+        case (int) '*':
+            return multsym;
+        case (int) '/':
+            return slashsym;
+        case (int) '=':
+            return eqsym;
+        case (int) '<':
+            return lessym;
+        case (int) '>':
+            return gtrsym;
+        case (int) '(':
+            return lparentsym;
+        case (int) ')':
+            return rparentsym;
+        case (int) ',':
+            return commasym;
+        case (int) ';':
+            return semicolonsym;
+        case (int) '.':
+            return periodsym;
+        case (int) ':': //---------------
+            return colonsym;
+        case (int) '{':
+            return lbracesym;
+        case (int) '}':
+            return rbracesym;
+        default:
+            return 0;
+    }
+    return 0;
+}
+
+struct token *tokeninzer (char codeArr[]){
+
+  int i = 0;
+  int j = 0;
+  int lineCount = 0;
+  struct token currToken;
+  struct token tokenStorage [strlen(codeArr)];
+
+  while(codeArr[i] != '\0'){
+
+    //Skips any white space in the string
+    if (codeArr[i] == ' '){
+      i++;
+      continue;
+    }
+
+    if (codeArr[i] == '\n' || codeArr[i] == '\r'){
+      lineCount++;
+      i++;
+      continue;
+    }
+
+    if(codeArr[i] == '\t'){
+      i++;
+      continue;
+    }
+
+    //Checks for reserved letters--------------------------------------//
+    if(codeArr[i] >= 'a' && codeArr[i] <= 'z'){
+
+      switch((int) codeArr[i]){
+
+        case (int) 'e':
+
+          if(codeArr[i+1] == 'l' && codeArr[i+2] == 's' && codeArr[i+3] == 'e'){
+            i = i + 3;
+            currToken.ID = elsesym;
+            tokenStorage[j] = currToken;
+            j++;
+            continue;
+          }
+        case (int) 'i':
+
+          if(codeArr[i+1] == 'f' && !(codeArr[i+2]>='a' && codeArr[i+2]<='z') && !(codeArr[i+2]>='A' && codeArr[i+2]<='Z')){
+            i = i + 2;
+            currToken.ID = ifsym;
+            tokenStorage[j] = currToken;
+            j++;
+            continue;
+          }
+        case (int) 't':
+
+          if(codeArr[i+1]=='h' && codeArr[i+2]=='e' && codeArr[i+3]=='n' && !(codeArr[i+4]>='a' && codeArr[i+4]<='z') && !(codeArr[i+4]>='A'&&codeArr[i+4]<='Z')){
+
+            i = i + 4;
+            currToken.ID = thensym;
+            tokenStorage[j] = currToken;
+            j++;
+            continue;
+          }
+        case (int) 'w':
+
+          if(codeArr[i+1] == 'h' && codeArr[i+2] == 'i' && codeArr[i+3] == 'l'  && codeArr[i+4] =='e'&& !(codeArr[i+5]>='a' && codeArr[i+5]<='z') && !(codeArr[i+5]>='A'&&codeArr[i+5]<='Z')){
+
+            i = i + 5;
+            currToken.ID = whilesym;
+            tokenStorage[j] = currToken;
+            j++;
+            continue;
+          }else if(codeArr[i+1] == 'r' && codeArr[i+2] == 'i' && codeArr[i+3] == 't'  && codeArr[i+4] =='e'&& !(codeArr[i+5]>='a' && codeArr[i+5]<='z') && !(codeArr[i+5]>='A'&&codeArr[i+5]<='Z')){
+
+            i = i + 5;
+            currToken.ID = writesym;
+            tokenStorage[j] = currToken;
+            j++;
+            continue;
+          }
+        case (int) 'd':
+
+          if(codeArr[i+1]=='o' && !(codeArr[i+2]>='a' && codeArr[i+2]<='z') && !(codeArr[i+2]>='A'&&codeArr[i+2]<='Z')){
+
+            i = i + 2;
+            currToken.ID = dosym;
+            tokenStorage[j] = currToken;
+            j++;
+            continue;
+          }
+        case (int) 'c':
+
+          if(codeArr[i+1]=='a'&&codeArr[i+2]=='l' && codeArr[i+3]=='l' && !(codeArr[i+4]>='a' && codeArr[i+4]<='z') && !(codeArr[i+4]>='A'&&codeArr[i+4]<='Z')){
+
+            i = i + 4;
+            currToken.ID = callsym;
+            tokenStorage[j] = currToken;
+            j++;
+            continue;
+
+          }else if(codeArr[i+1] == 'o' && codeArr[i+2] == 'n' && codeArr[i+3] == 's'  && codeArr[i+4] =='t'&& !(codeArr[i+5]>='a' && codeArr[i+5]<='z') && !(codeArr[i+5]>='A'&&codeArr[i+5]<='Z')){
+
+            i = i + 5;
+            currToken.ID = constsym;
+            tokenStorage[j] = currToken;
+            j++;
+            continue;
+          }
+        case (int) 'v':
+          if(codeArr[i+1]=='a'&&codeArr[i+2]=='r' && !(codeArr[i+3]>='a' && codeArr[i+3]<='z') && !(codeArr[i+3]>='A'&&codeArr[i+3]<='Z')){
+
+            i = i + 3;
+            currToken.ID = varsym;
+            tokenStorage[j] = currToken;
+            j++;
+            continue;
+          }
+        case (int) 'o':
+           if(codeArr[i+1]=='d'&&codeArr[i+2]=='d' && !(codeArr[i+3]>='a' && codeArr[i+3]<='z') && !(codeArr[i+3]>='A'&&codeArr[i+3]<='Z')){
+
+            i = i + 3;
+            currToken.ID = oddsym;
+            tokenStorage[j] = currToken;
+            j++;
+            continue;
+          }
+        case (int) 'p':
+
+          if(codeArr[i+1]=='r' &&codeArr[i+2] == 'o' &&codeArr[i+3] == 'c' &&codeArr[i+4] == 'e' &&codeArr[i+5] == 'd' &&codeArr[i+6] == 'u' &&codeArr[i+7] == 'r' &&codeArr[i+8] == 'e' && !(codeArr[i+9]>='a' && codeArr[i+9]<='z') && !(codeArr[i+9]>='A'&&codeArr[i+9]<='Z')){
+
+            i = i + 9;
+            currToken.ID = procsym;
+            tokenStorage[j] = currToken;
+            j++;
+            continue;
+          }
+        case (int) 'r':
+
+          if(codeArr[i+1] == 'e' &&codeArr[i+2] == 'a' &&codeArr[i+3] == 'd' && !(codeArr[i+4]>='a' && codeArr[i+4]<='z') && !(codeArr[i+4]>='A'&&codeArr[i+4]<='Z')){
+
+            i= i + 4;
+            currToken.ID = readsym;
+            tokenStorage[j] = currToken;
+            j++;
+            continue;
+          }
+        default:
+          break;
+
+      }
+
+    }//end of checking for reserved letters / words---------------------------//
+
+    //Will check for reserved symbols
+
+    //This will check if the current token is going to match with a character
+    currToken.ID = symbolToToken(codeArr[i]);
+    if(currToken.ID != 0){
+
+      int nextSym;
+
+      if(currToken.ID == lessym){
+
+        nextSym = symbolToToken(codeArr[i+1]);
+        if(nextSym == gtrsym){
+
+            currToken.ID = neqsym;
+            tokenStorage[j] = currToken;
+            j++;
+            i = i + 2;
+            continue;
+
+        }else if(nextSym == eqsym){
+
+            currToken.ID = leqsym;
+            tokenStorage[j] = currToken;
+            j++;
+            i = i + 2;
+            continue;
+
+        }
+
+      }
+      if(currToken.ID == gtrsym){
+
+        nextSym = symbolToToken(codeArr[i+1]);
+        if(nextSym == eqsym){
+            currToken.ID = geqsym;
+            tokenStorage[j] = currToken;
+            j++;
+            i = i + 2;
+            continue;
+        }
+
+      }
+      if(currToken.ID == colonsym){
+
+        nextSym = symbolToToken(codeArr[i+1]);
+        if(nextSym == eqsym){
+
+          currToken.ID = becomessym;
+          tokenStorage[j] = currToken;
+          j++;
+          i = i + 2;
+          continue;
+
+        }else{
+          //there is a invalid symbol instead, this kills the lexical analyzer
+          printf("ERROR: INVALID SYMBOL AT LINE NUMBER %d", lineCount);
+          exit(0);
+        }
+
+      }
+
+      nextSym = symbolToToken(codeArr[i+1]);
+      tokenStorage[j] = currToken; //add current token to tokens array if a single symbol
+      j++;
+      i++;
+      continue;
+
+    }//---------------------end of reserved symbols-----------------------//
+
+
+    //Will check numbers-------------------------------------------------//
+    if(codeArr[i]>='0' && codeArr[i]<='9'){
+      int k;
+      int tempSum;
+      int digitCount;
+
+      for(k=i; k < MAX_DIGITS + i; k++){
+        if((codeArr[k] == ' ') || (codeArr[k] == '\t') || (codeArr[k] == '\n') || (codeArr[k] >= '!' && codeArr[k] <= '/') || (codeArr[k] >= ':' && codeArr[k] <= '@')){
+
+          break;
+
+        }
+        if((codeArr[k] >= 'A' && codeArr[k] <= 'Z') || (codeArr[k] >= 'a' && codeArr[k] <= 'z')){
+
+          printf("ERROR: VARIABLE NAME STARTS WITH NUMBER ON LINE %d\n", lineCount);
+          exit(0);
+
+        }
+      }
+
+      k = i;
+      tempSum = 0;
+
+      digitCount = 1;
+      while(codeArr[k] >= '0' && codeArr[k] <= '9'){
+        if(digitCount > 5){
+          printf("ERROR: NUMBER EXCEEDS MAX LENGTH ON LINE %d\n", lineCount);
+          exit(0);
+        }else{
+          k++;
+          digitCount++;
+        }
+      }
+
+      digitCount--;
+      int m;
+
+      for( m=k-digitCount; m < k ; m ++){
+        tempSum += (codeArr[m]- '0') * pow(10,digitCount-1);
+        digitCount--;
+      }
+
+      currToken.ID = numbersym;
+      currToken.value = tempSum;
+      tokenStorage[j] = currToken;
+      j++;
+
+      i = k;//This needs to be tested
+      continue;
+    }//end of checking numbers-----------------------------------------------------------------------------------//
+
+    //This is the last case where it must be an identifier-------------------------------------------------------//
+    if((codeArr[i]>='a' && codeArr[i]<='z') || (codeArr[i]>='A'&& codeArr[i]<='Z') || (codeArr[i]>='0' && codeArr[i]<='9')|| (codeArr[i] == '_')){
+
+      int identifier_length = 0;
+      char identifier[MAX_ID_LENGTH];
+      int p, n;
+      n = i;
+
+      for(p = 0; p < MAX_ID_LENGTH; p++){
+          identifier[p] = '\0';
+      }
+
+      while(((codeArr[n]>='a' && codeArr[n]<='z')|| (codeArr[n]>='A'&& codeArr[n]<='Z') || (codeArr[n]>='0'&& codeArr[n]<='9')) || (codeArr[n] == '_')){
+
+          if(identifier_length > MAX_ID_LENGTH-1){
+              //there is an identifier with a length too long, this kills the lexical analyzer
+              printf("ERROR: IDENTIFIER LENGTH TOO LONG ON LINE %d\n", lineCount);
+              exit(0);
+          }
+          identifier[identifier_length] = codeArr[n];
+          identifier_length++;
+          n++;
+
+      }
+
+      //generate the identifier token
+      currToken.ID=identsym;
+      strcpy(currToken.nameEnum, identifier);
+      tokenStorage[j] = currToken;
+      j++;
+      i+=identifier_length;
+      continue;
+
+      }else{
+          printf("ERROR: INVALID SYMBOL ON LINE %d\n", lineCount);
+          exit(0);
+    }//-------------------------------------end of checking identifier------------------------------------------------//
+
+  }
+
+  tokenStorage[j].ID = 0; //ID 0 signals the end of the struct
+  return tokenStorage;
+
+}
+
+
 void lexemeTable (FILE *fpw, struct token *tokens)
 {
     fprintf(fpw, "\n\nLexeme Table: \n");
@@ -158,11 +515,330 @@ int main()
     printf(" %d", nulsym);
     */
 
-    char *anArray = calloc(1000, sizeof(char));
-    removeComments(fp, fpw, anArray);
+    char *codeArr = calloc(1000, sizeof(char));
+    removeComments(fp, fpw, codeArr);
 
     // an array of structs for the tokens which is the length of the array we just built
-    struct token tokens[strlen(anArray)];
+    //struct token *tokens = calloc(strlen(anArray), sizeof(struct token)); //[strlen(anArray)];;
+
+    //tokens = tokeninzer(anArray);
+
+
+
+
+  int i = 0;
+  int j = 0;
+  int lineCount = 0;
+  struct token currToken;
+  struct token tokenStorage [strlen(codeArr)];
+
+  while(codeArr[i] != '\0'){
+
+    //Skips any white space in the string
+    if (codeArr[i] == ' '){
+      i++;
+      continue;
+    }
+
+    if (codeArr[i] == '\n' || codeArr[i] == '\r'){
+      lineCount++;
+      i++;
+      continue;
+    }
+
+    if(codeArr[i] == '\t'){
+      i++;
+      continue;
+    }
+
+    //Checks for reserved letters--------------------------------------//
+    if(codeArr[i] >= 'a' && codeArr[i] <= 'z'){
+
+      switch((int) codeArr[i]){
+
+        case (int) 'e':
+
+          if(codeArr[i+1] == 'l' && codeArr[i+2] == 's' && codeArr[i+3] == 'e'){
+            i = i + 3;
+            currToken.ID = elsesym;
+            tokenStorage[j] = currToken;
+            j++;
+            continue;
+          }
+        case (int) 'i':
+
+          if(codeArr[i+1] == 'f' && !(codeArr[i+2]>='a' && codeArr[i+2]<='z') && !(codeArr[i+2]>='A' && codeArr[i+2]<='Z')){
+            i = i + 2;
+            currToken.ID = ifsym;
+            tokenStorage[j] = currToken;
+            j++;
+            continue;
+          }
+        case (int) 't':
+
+          if(codeArr[i+1]=='h' && codeArr[i+2]=='e' && codeArr[i+3]=='n' && !(codeArr[i+4]>='a' && codeArr[i+4]<='z') && !(codeArr[i+4]>='A'&&codeArr[i+4]<='Z')){
+
+            i = i + 4;
+            currToken.ID = thensym;
+            tokenStorage[j] = currToken;
+            j++;
+            continue;
+          }
+        case (int) 'w':
+
+          if(codeArr[i+1] == 'h' && codeArr[i+2] == 'i' && codeArr[i+3] == 'l'  && codeArr[i+4] =='e'&& !(codeArr[i+5]>='a' && codeArr[i+5]<='z') && !(codeArr[i+5]>='A'&&codeArr[i+5]<='Z')){
+
+            i = i + 5;
+            currToken.ID = whilesym;
+            tokenStorage[j] = currToken;
+            j++;
+            continue;
+          }else if(codeArr[i+1] == 'r' && codeArr[i+2] == 'i' && codeArr[i+3] == 't'  && codeArr[i+4] =='e'&& !(codeArr[i+5]>='a' && codeArr[i+5]<='z') && !(codeArr[i+5]>='A'&&codeArr[i+5]<='Z')){
+
+            i = i + 5;
+            currToken.ID = writesym;
+            tokenStorage[j] = currToken;
+            j++;
+            continue;
+          }
+        case (int) 'd':
+
+          if(codeArr[i+1]=='o' && !(codeArr[i+2]>='a' && codeArr[i+2]<='z') && !(codeArr[i+2]>='A'&&codeArr[i+2]<='Z')){
+
+            i = i + 2;
+            currToken.ID = dosym;
+            tokenStorage[j] = currToken;
+            j++;
+            continue;
+          }
+        case (int) 'c':
+
+          if(codeArr[i+1]=='a'&&codeArr[i+2]=='l' && codeArr[i+3]=='l' && !(codeArr[i+4]>='a' && codeArr[i+4]<='z') && !(codeArr[i+4]>='A'&&codeArr[i+4]<='Z')){
+
+            i = i + 4;
+            currToken.ID = callsym;
+            tokenStorage[j] = currToken;
+            j++;
+            continue;
+
+          }else if(codeArr[i+1] == 'o' && codeArr[i+2] == 'n' && codeArr[i+3] == 's'  && codeArr[i+4] =='t'&& !(codeArr[i+5]>='a' && codeArr[i+5]<='z') && !(codeArr[i+5]>='A'&&codeArr[i+5]<='Z')){
+
+            i = i + 5;
+            currToken.ID = constsym;
+            tokenStorage[j] = currToken;
+            j++;
+            continue;
+          }
+        case (int) 'v':
+          if(codeArr[i+1]=='a'&&codeArr[i+2]=='r' && !(codeArr[i+3]>='a' && codeArr[i+3]<='z') && !(codeArr[i+3]>='A'&&codeArr[i+3]<='Z')){
+
+            i = i + 3;
+            currToken.ID = varsym;
+            tokenStorage[j] = currToken;
+            j++;
+            continue;
+          }
+        case (int) 'o':
+           if(codeArr[i+1]=='d'&&codeArr[i+2]=='d' && !(codeArr[i+3]>='a' && codeArr[i+3]<='z') && !(codeArr[i+3]>='A'&&codeArr[i+3]<='Z')){
+
+            i = i + 3;
+            currToken.ID = oddsym;
+            tokenStorage[j] = currToken;
+            j++;
+            continue;
+          }
+        case (int) 'p':
+
+          if(codeArr[i+1]=='r' &&codeArr[i+2] == 'o' &&codeArr[i+3] == 'c' &&codeArr[i+4] == 'e' &&codeArr[i+5] == 'd' &&codeArr[i+6] == 'u' &&codeArr[i+7] == 'r' &&codeArr[i+8] == 'e' && !(codeArr[i+9]>='a' && codeArr[i+9]<='z') && !(codeArr[i+9]>='A'&&codeArr[i+9]<='Z')){
+
+            i = i + 9;
+            currToken.ID = procsym;
+            tokenStorage[j] = currToken;
+            j++;
+            continue;
+          }
+        case (int) 'r':
+
+          if(codeArr[i+1] == 'e' &&codeArr[i+2] == 'a' &&codeArr[i+3] == 'd' && !(codeArr[i+4]>='a' && codeArr[i+4]<='z') && !(codeArr[i+4]>='A'&&codeArr[i+4]<='Z')){
+
+            i= i + 4;
+            currToken.ID = readsym;
+            tokenStorage[j] = currToken;
+            j++;
+            continue;
+          }
+        default:
+          break;
+
+      }
+
+    }//end of checking for reserved letters / words---------------------------//
+
+    //Will check for reserved symbols
+
+    //This will check if the current token is going to match with a character
+    currToken.ID = symbolToToken(codeArr[i]);
+    if(currToken.ID != 0){
+
+      int nextSym;
+
+      if(currToken.ID == lessym){
+
+        nextSym = symbolToToken(codeArr[i+1]);
+        if(nextSym == gtrsym){
+
+            currToken.ID = neqsym;
+            tokenStorage[j] = currToken;
+            j++;
+            i = i + 2;
+            continue;
+
+        }else if(nextSym == eqsym){
+
+            currToken.ID = leqsym;
+            tokenStorage[j] = currToken;
+            j++;
+            i = i + 2;
+            continue;
+
+        }
+
+      }
+      if(currToken.ID == gtrsym){
+
+        nextSym = symbolToToken(codeArr[i+1]);
+        if(nextSym == eqsym){
+            currToken.ID = geqsym;
+            tokenStorage[j] = currToken;
+            j++;
+            i = i + 2;
+            continue;
+        }
+
+      }
+      if(currToken.ID == colonsym){
+
+        nextSym = symbolToToken(codeArr[i+1]);
+        if(nextSym == eqsym){
+
+          currToken.ID = becomessym;
+          tokenStorage[j] = currToken;
+          j++;
+          i = i + 2;
+          continue;
+
+        }else{
+          //there is a invalid symbol instead, this kills the lexical analyzer
+          printf("ERROR: INVALID SYMBOL AT LINE NUMBER %d", lineCount);
+          exit(0);
+        }
+
+      }
+
+      nextSym = symbolToToken(codeArr[i+1]);
+      tokenStorage[j] = currToken; //add current token to tokens array if a single symbol
+      j++;
+      i++;
+      continue;
+
+    }//---------------------end of reserved symbols-----------------------//
+
+
+    //Will check numbers-------------------------------------------------//
+    if(codeArr[i]>='0' && codeArr[i]<='9'){
+      int k;
+      int tempSum;
+      int digitCount;
+
+      for(k=i; k < MAX_DIGITS + i; k++){
+        if((codeArr[k] == ' ') || (codeArr[k] == '\t') || (codeArr[k] == '\n') || (codeArr[k] >= '!' && codeArr[k] <= '/') || (codeArr[k] >= ':' && codeArr[k] <= '@')){
+
+          break;
+
+        }
+        if((codeArr[k] >= 'A' && codeArr[k] <= 'Z') || (codeArr[k] >= 'a' && codeArr[k] <= 'z')){
+
+          printf("ERROR: VARIABLE NAME STARTS WITH NUMBER ON LINE %d\n", lineCount);
+          exit(0);
+
+        }
+      }
+
+      k = i;
+      tempSum = 0;
+
+      digitCount = 1;
+      while(codeArr[k] >= '0' && codeArr[k] <= '9'){
+        if(digitCount > 5){
+          printf("ERROR: NUMBER EXCEEDS MAX LENGTH ON LINE %d\n", lineCount);
+          exit(0);
+        }else{
+          k++;
+          digitCount++;
+        }
+      }
+
+      digitCount--;
+      int m;
+
+      for( m=k-digitCount; m < k ; m ++){
+        tempSum += (codeArr[m]- '0') * pow(10,digitCount-1);
+        digitCount--;
+      }
+
+      currToken.ID = numbersym;
+      currToken.value = tempSum;
+      tokenStorage[j] = currToken;
+      j++;
+
+      i = k;//This needs to be tested
+      continue;
+    }//end of checking numbers-----------------------------------------------------------------------------------//
+
+    //This is the last case where it must be an identifier-------------------------------------------------------//
+    if((codeArr[i]>='a' && codeArr[i]<='z') || (codeArr[i]>='A'&& codeArr[i]<='Z') || (codeArr[i]>='0' && codeArr[i]<='9')|| (codeArr[i] == '_')){
+
+      int identifier_length = 0;
+      char identifier[MAX_ID_LENGTH];
+      int p, n;
+      n = i;
+
+      for(p = 0; p < MAX_ID_LENGTH; p++){
+          identifier[p] = '\0';
+      }
+
+      while(((codeArr[n]>='a' && codeArr[n]<='z')|| (codeArr[n]>='A'&& codeArr[n]<='Z') || (codeArr[n]>='0'&& codeArr[n]<='9')) || (codeArr[n] == '_')){
+
+          if(identifier_length > MAX_ID_LENGTH-1){
+              //there is an identifier with a length too long, this kills the lexical analyzer
+              printf("ERROR: IDENTIFIER LENGTH TOO LONG ON LINE %d\n", lineCount);
+              exit(0);
+          }
+          identifier[identifier_length] = codeArr[n];
+          identifier_length++;
+          n++;
+
+      }
+
+      //generate the identifier token
+      currToken.ID=identsym;
+      strcpy(currToken.nameEnum, identifier);
+      tokenStorage[j] = currToken;
+      j++;
+      i+=identifier_length;
+      continue;
+
+      }else{
+          printf("ERROR: INVALID SYMBOL ON LINE %d\n", lineCount);
+          exit(0);
+    }//-------------------------------------end of checking identifier------------------------------------------------//
+
+  }
+
+  tokenStorage[j].ID = 0; //ID 0 signals the end of the struct
+
+
+
 
     /*
     // Dummy Tokens:
@@ -195,10 +871,10 @@ int main()
     */
 
     // print lexeme table
-    lexemeTable(fpw, tokens);
+    lexemeTable(fpw, tokenStorage);
 
     // print lexeme list
-    lexemeList(fpw, tokens);
+    lexemeList(fpw, tokenStorage);
 
     fclose(fp);
     fclose(fpw);
