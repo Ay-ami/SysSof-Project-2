@@ -1,0 +1,18 @@
+{
+    a:=1;
+    b:=2;
+    write a;
+    write b;
+    call first;
+    write z;
+    write a;
+    write b;
+    call second; /*quite a commenty comment*/
+    write z;
+    write a;
+    write b; /*short comment*/
+    call first;
+    write z;
+    write a;
+    write b;
+};

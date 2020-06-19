@@ -1,0 +1,48 @@
+var a,b;
+    {
+        write z;
+        write a; 
+        write b;
+        a:=3;
+        b:=4;
+        write a;
+        write b;
+    };
+
+Lexeme Table: 
+lexeme 		 token type
+var               29
+a                  2
+,                 17
+b                  2
+;                 18
+{                 21
+write             31
+z                  2
+;                 18
+write             31
+a                  2
+;                 18
+write             31
+b                  2
+;                 18
+a                  2
+:=                20
+3                  3
+;                 18
+b                  2
+:=                20
+4                  3
+;                 18
+write             31
+a                  2
+;                 18
+write             31
+b                  2
+;                 18
+}                 22
+;                 18
+
+
+Lexeme List
+29  2 a  17  2 b  18  21  31  2 z  18  31  2 a  18  31  2 b  18  2 a  20  3  18  2 b  20  3  18  31  2 a  18  31  2 b  18  22  18  

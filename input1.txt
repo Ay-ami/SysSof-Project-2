@@ -1,0 +1,10 @@
+var a,b;
+    {
+        write z;
+        write a; /*comment*/
+        write b;
+        a:=3;
+        b:=4;
+        write a;
+        write b;
+    };
