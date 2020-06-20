@@ -150,7 +150,7 @@ int symbolToToken(char symbol){ //exchanges char for token ident tag
     return 0;
 }
 
-
+// prints out lexeme table
 void lexemeTable (FILE *fpw, struct token *tokens)
 {
     fprintf(fpw, "\n\nLexeme Table: \n");
@@ -172,7 +172,7 @@ void lexemeTable (FILE *fpw, struct token *tokens)
     }
 
 }
-
+// prints out lexeme list
 void lexemeList (FILE *fpw, struct token *tokens)
 {
     fprintf(fpw, "\n\nLexeme List\n");
